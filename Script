@@ -1,0 +1,123 @@
+-- Services
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- GUI Setup
+local loadingGui = Instance.new("ScreenGui")
+loadingGui.Name = "CustomLoadingScreen"
+loadingGui.IgnoreGuiInset = true
+loadingGui.DisplayOrder = 999999 -- Highest priority
+loadingGui.ResetOnSpawn = false
+loadingGui.Parent = playerGui
+
+-- Fullscreen black background
+local bg = Instance.new("Frame")
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+bg.BorderSizePixel = 0
+bg.Parent = loadingGui
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.Position = UDim2.new(0, 0, 0.18, 0)
+title.BackgroundTransparency = 1
+title.Text = [["Project Reverse" / Grow A Garden]]
+title.TextColor3 = Color3.fromRGB(0,120,255)
+title.Font = Enum.Font.GothamBlack
+title.TextScaled = true
+title.Parent = bg
+
+-- Dynamic Info Text
+local infoLabel = Instance.new("TextLabel")
+infoLabel.Size = UDim2.new(1, 0, 0, 30)
+infoLabel.Position = UDim2.new(0, 0, 0.25, 0)
+infoLabel.BackgroundTransparency = 1
+infoLabel.Text = ""
+infoLabel.TextColor3 = Color3.fromRGB(150, 150, 255)
+infoLabel.Font = Enum.Font.GothamSemibold
+infoLabel.TextScaled = true
+infoLabel.Parent = bg
+
+-- Loading label
+local loadingLabel = Instance.new("TextLabel")
+loadingLabel.Size = UDim2.new(1, 0, 0, 40)
+loadingLabel.Position = UDim2.new(0, 0, 0.30, 0)
+loadingLabel.BackgroundTransparency = 1
+loadingLabel.Text = "⚙️ Loading Script..."
+loadingLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+loadingLabel.Font = Enum.Font.Gotham
+loadingLabel.TextScaled = true
+loadingLabel.Parent = bg
+
+-- Percent counter
+local percent = Instance.new("TextLabel")
+percent.Size = UDim2.new(1, 0, 0, 40)
+percent.Position = UDim2.new(0, 0, 0.38, 0)
+percent.BackgroundTransparency = 1
+percent.Text = "0%"
+percent.TextColor3 = Color3.fromRGB(0, 255, 0)
+percent.Font = Enum.Font.GothamBold
+percent.TextScaled = true
+percent.Parent = bg
+
+-- Progress bar background
+local barBG = Instance.new("Frame")
+barBG.Size = UDim2.new(0.6, 0, 0, 16)
+barBG.Position = UDim2.new(0.2, 0, 0.475, 0)
+barBG.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+barBG.BorderSizePixel = 0
+barBG.ClipsDescendants = true
+Instance.new("UICorner", barBG).CornerRadius = UDim.new(0, 8)
+barBG.Parent = bg
+
+-- Progress bar fill
+local barFill = Instance.new("Frame")
+barFill.Size = UDim2.new(0, 0, 1, 0)
+barFill.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+barFill.BorderSizePixel = 0
+Instance.new("UICorner", barFill).CornerRadius = UDim.new(0, 8)
+barFill.Parent = barBG
+
+-- Warning label
+local warning = Instance.new("TextLabel")
+warning.Size = UDim2.new(1, -20, 0, 30)
+warning.Position = UDim2.new(0, 10, 0.88, 0)
+warning.BackgroundTransparency = 1
+warning.Text = "⚠️ PLEASE DO NOT LEAVE - WILL RUIN AND MIGHT DELETE DATA, WAIT FOR PROGRESS BAR TO FINISH ⚠️"
+warning.TextColor3 = Color3.fromRGB(255, 80, 80)
+warning.Font = Enum.Font.GothamBold
+warning.TextScaled = true
+warning.Parent = bg
+
+-- Rotating warning messages
+local infoMessages = {
+    "Bypassing anti-cheat",
+    "Don't leave or risk ban!",
+    "Make sure to support us!",
+    "Over 50,000 users worldwide!",
+    "Trusted by top scripters!",
+    "Regular updates available!",
+    "Not just visual - full server-side script!",
+    "#1 Script on Grow A Garden"
+}
+
+task.spawn(function()
+    local index = 1
+    while true do
+        infoLabel.Text = infoMessages[index]
+        index = index % #infoMessages + 1
+        wait(5)
+    end
+end)
+
+-- 8-minute loading logic (480 seconds)
+task.spawn(function()
+    for i = 1, 100 do
+        percent.Text = i .. "%"
+        barFill:TweenSize(UDim2.new(i / 100, 0, 1, 0), "Out", "Quad", 0.2, true)
+        wait(4.8) -- 480 seconds / 100 steps = 4.8s per step
+    end
+    loadingGui:Destroy()
+end)
